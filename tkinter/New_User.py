@@ -1,21 +1,29 @@
 # -*- coding: utf-8 -*-
 #__LIBRARIES__
-from platform import architecture
 import Log_In_Class
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
+import hashlib as hash
 
-#__CREATE NEW USER__#
-class New_User(Tk):
-    def __init__(self,):
+#__MAIN WINDOW__#
+class main_window(Tk):
+    def __init__(self):
         Tk.__init__(self)
         
-        # Window config
-        self.title('Nuevo Usuario')
+        self.title('NEW USER')
         self.geometry('575x150')
-        # TODO 
-        # self.iconbitmap()
+        
+        self._frame = New_User(self)
+        self._frame.pack(fill=NONE, expand=1)
+
+#__CREATE NEW USER FRAME__#
+class New_User(Frame):
+    def __init__(self, master):
+        Frame.__init__(self)
+
+        self._master = master
+        self._master.geometry('575x150')
         
         # widgets
         Label(self, text = '*Nombre:').grid(row = 0, column = 0, padx = 10, pady = 5, sticky = W)
@@ -80,11 +88,29 @@ class New_User(Tk):
         self.verify_password()
         attributes = self.__dict__
         user = dict()
+        user['code'] = self.gen_code()
         for item in attributes:
             if type(attributes[item]) is Entry and self.verify_box(item):
-                user[item] = attributes[item].get()
-        print(user)
-                
+                if item == 'password':
+                    user[item] = self.encode_password(attributes[item].get())
+                if not item == 'password2':
+                    user[item] = attributes[item].get()
+        
+        self._master.save_new_user(user)
+    
+    def gen_code(self):
+        string = self.name.get() + \
+                 self.surname.get() + \
+                 self.user.get()
+        model = hash.new('sha256')
+        model.update(string.encode('utf-8'))
+        return model.hexdigest()[::2]
+    
+    def encode_password(self, password):
+        model = hash.new('sha256')
+        model.update(password.encode('utf-8'))
+        return model.hexdigest()
+    
     def verify_mail(self, event):
         domains = ['hotmail', 'gmail', 'yahoo', 'outlook', 'aol']
         exts = ['com', 'es', 'net']
@@ -119,7 +145,7 @@ class New_User(Tk):
         Log_In_Class.run()
 
 def run():
-	itc = New_User()
+	itc = main_window()
 	itc.mainloop()
 
 if __name__ == '__main__':
