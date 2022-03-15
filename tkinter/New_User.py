@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #__LIBRARIES__
-import Log_In_Class
+from Log_In_Class import Log_In
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 import hashlib as hash
+import string
 
 #__MAIN WINDOW__#
 class main_window(Tk):
@@ -24,6 +25,8 @@ class New_User(Frame):
 
         self._master = master
         self._master.geometry('575x150')
+        self._master.resizable(FALSE, FALSE)
+        # TODO self._master.iconbitmap()
         
         # widgets
         Label(self, text = '*Nombre:').grid(row = 0, column = 0, padx = 10, pady = 5, sticky = W)
@@ -85,18 +88,18 @@ class New_User(Frame):
         self.password2.after(750, lambda: self.password2.config(show = '*'))
         
     def collect(self):
-        self.verify_password()
         attributes = self.__dict__
         user = dict()
-        user['code'] = self.gen_code()
-        for item in attributes:
-            if type(attributes[item]) is Entry and self.verify_box(item):
-                if item == 'password':
-                    user[item] = self.encode_password(attributes[item].get())
-                if not item == 'password2':
-                    user[item] = attributes[item].get()
-        
-        self._master.save_new_user(user)
+        user['id_code'] = self.gen_code()
+        if self.verify_password():
+            for item in attributes:
+                if type(attributes[item]) is Entry and self.verify_box(item):
+                    if item == 'password':
+                        user[item] = self.encode_password(attributes[item].get())
+                    elif not item == 'password2':
+                        user[item] = attributes[item].get()
+            self._master.save_new_user(user)
+            self._master.switch_frames(Log_In)
     
     def gen_code(self):
         string = self.name.get() + \
@@ -123,11 +126,25 @@ class New_User(Frame):
             messagebox.showerror(title='El correo no es valido', message='Verifique el correo y vuelva a intentarlo.')
         
     def verify_password(self):
+        low, up, sym = 0, 0, 0
+        symbols = str()
+        for i in string.printable:
+            if i not in string.ascii_letters:
+                symbols += i
         if not self.password.get() == '' or not self.password2.get() == '':
             if self.password.get() == self.password2.get():
+                pss = self.password.get()
+                for char in pss:
+                    if char in string.ascii_uppercase:
+                        up += 1
+                    elif char in string.ascii_lowercase:
+                        low += 1
+                    elif char in symbols:
+                        sym += 1
+            if low > 0 and up > 0 and sym > 0 and len(pss) > 6:
                 return True
             else:
-                messagebox.showerror('Las Contraseñas no coinciden', 'Verifique los campos de Contraseña')
+                messagebox.showerror('No son validas', 'Debe contener una Mayúscula, una minúscula y un numero o simbolo como mínimo.')
                 return False
         else:
             messagebox.showerror('Las Contraseñas no coinciden', 'Verifique los campos de Contraseña')
@@ -141,8 +158,7 @@ class New_User(Frame):
             return True
         
     def back(self):
-        self.destroy()
-        Log_In_Class.run()
+        self._master.switch_frames(Log_In)
 
 def run():
 	itc = main_window()
