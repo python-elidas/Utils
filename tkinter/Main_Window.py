@@ -11,7 +11,6 @@ from tkinter import *
 import simply_sqlite as sSQL
 from New_User import New_User
 from Log_In_Class import Log_In
-from toolPrint import dictPrint
 
 # __MAIN_WINDOW__ #
 class Window(Tk):
