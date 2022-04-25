@@ -1,0 +1,33 @@
+'''
+Author: Elidas
+Email: pyro.elidas@gmail.com
+Python version: 3.9
+Date: 2021-08-24
+'''
+
+#__LIBRARIES__#
+from tkinter import *
+
+
+#__Main Class__#
+class ScrollWindow(Canvas):
+    def __init__(self, master):
+        Canvas.__init__(self, master)
+                
+        #Creamos lo necesario
+        self.frame = Frame(self)
+        self.vbar = Scrollbar(self.master, orient=VERTICAL, command=self.yview)
+        
+        #Configuramos
+        self.config(yscrollcommand=self.vbar.set)
+        self.frame.bind('<Configure>', self.__updateScrollRegion)
+        self.bind_all('<MouseWheel>', self.__on_mousewheel)
+        self.vbar.pack(fill=Y, side=RIGHT, expand=FALSE)
+        self.create_window(0, 0, window=self.frame, anchor=NW)
+        
+    def __updateScrollRegion(self, event):
+        self.update_idletasks()
+        self.config(scrollregion=self.frame.bbox())
+        
+    def __on_mousewheel(self, event):
+        self.yview_scroll(-1*int(event.delta/120), "units")

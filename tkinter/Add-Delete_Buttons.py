@@ -1,0 +1,81 @@
+'''
+Author: Elidas
+Email: pyro.elidas@gmail.com
+Python version: 3.9
+Date: 2021-08-24
+'''
+
+#__LIBRARIES__#
+from tkinter import *
+
+#__Main Class__#
+class Add_Delete(Button):
+    '''
+    Creates a button pair to add or delete a copy of the row
+    in which they are placed.
+    ONLY WITH GRID!!
+    '''
+    def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=12):
+        Button.__init__(self, master)
+        self.__min = min_row
+        self.__max = max_row
+        self.__row = self.master.grid_size()[1]
+        self.__dic = self.master.__dict__['children'].values()
+        self.add = Button(
+            master, text='+',
+            font=(textFont, int(textSize*scale)),
+            command=self.__add_row
+        )
+        self.add.grid(row=master.grid_size()[1]-1, column=master.grid_size()[0], padx=10)
+        self.delete = Button(
+            master, text='-',
+            font=(textFont, int((textSize)*scale)),
+            state=DISABLED, width=self.add['width'],
+            command=self.__del_row
+        )
+        self.delete.grid(row=master.grid_size()[1]-1, column=master.grid_size()[0]+1)
+    
+    def __add_row(self):
+        '''
+        Adds a new row with the same items in the row below
+        '''
+        to_copy = [i for i in self.__dic if not isinstance(i, Button) and i.grid_info()['row']==self.__row-1]
+        for item in to_copy:
+            new = type(item)(self.master)
+            for key in list(item.keys())[:-1]:
+                try:
+                    new.config({key: item[key]})
+                    try:
+                        new.current(0)
+                    except:
+                        pass
+                except Exception:
+                    pass
+            for info in list(item.grid_info()):
+                try:
+                    new.grid({info: item.grid_info()[info]})
+                    new.grid(row=self.__row)
+                except:
+                    pass
+        self.add.grid(row=self.__row)
+        self.delete.grid(row=self.__row)
+        self.__row = self.master.grid_size()[1]
+        if self.__row >= self.__min:
+            self.delete.config(state=NORMAL)
+        if self.__row == self.__max and self.__max != -1:
+            self.add.config(state=DISABLED)
+        
+    def __del_row(self):
+        '''
+        Deletes the current row of items.
+        '''
+        to_delete = [i for i in self.__dic if not isinstance(i, Button) and i.grid_info()['row']==self.__row-1]
+        for item in to_delete:
+            item.destroy()
+        self.add.grid(row=self.__row-2)
+        self.delete.grid(row=self.__row-2)
+        self.__row = self.master.grid_size()[1]
+        if self.__row <= self.__min:
+            self.delete.config(state=DISABLED)
+        if self.__row < self.__max:
+            self.add.config(state=NORMAL)

@@ -1,1 +1,2 @@
 simply-sqlite
+Pillow
