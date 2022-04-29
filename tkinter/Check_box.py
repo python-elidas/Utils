@@ -9,6 +9,7 @@ Date: 2021-08-24
 from tkinter import *
 
 #__MAIN CLASS__#
+#__Custom Checkbox__
 class Checkbox(Checkbutton):
     '''
     A simplified CheckBox with a simply usage to set active or
@@ -23,7 +24,9 @@ class Checkbox(Checkbutton):
         self.config(font = kwargs['font'])
         self.config(offvalue=False, onvalue=True)
         self.config(variable = self.__control_var)
-        self.bind('<ButtonRelease-1>', self.apply_codependencyes)
+        self.bind('<ButtonRelease-1>', self.__bind)
+        
+        self.binded = [self.apply_codependencyes]
 
     def set_text(self, text):
         '''
@@ -55,13 +58,15 @@ class Checkbox(Checkbutton):
         If CheckBox, deactivates.
         If Entry
         '''
-        self.apply_dependencies()
+        self.__apply_dependencies()
         for item in self.__dependencies:
             if isinstance(item, Checkbox):
+                if item.is_active():
+                    item.__apply_dependencies()
                 item.deselect()
-                item.apply_dependencies()
+                
     
-    def apply_dependencies(self):
+    def __apply_dependencies(self):
         for item in self.__dependencies:
             if isinstance(item, Entry):
                 if item['state'] == NORMAL:
@@ -75,8 +80,13 @@ class Checkbox(Checkbutton):
         '''
         items = list()
         for item in self.__dependencies:
-            obj = (item['text'], item.is_active())
+            obj = dict()
+            if isinstance(item, Checkbox):
+                obj = (item['text'], item.is_active(), item)
+            if isinstance(item, Entry):
+                obj = ('Entry', item['state'], item)
             items.append(obj)
+        items.append((self['text'], self.is_active(), self))
         return items
 
     def delete_dependencies(self, *args):
@@ -92,3 +102,16 @@ class Checkbox(Checkbutton):
         '''
         return self.__control_var.get()
     
+    def add_func_to_bind(self, func):
+        '''
+        Adds a function to queue to run when the checkbox is clicked.
+        functions run every time the checkbox is checked
+        '''
+        self.binded.append(func)
+        
+    def __bind(self, event):
+        '''
+        runs every function in the queue when the checkbox is clicked
+        '''
+        for func in self.binded:
+            func(event)
