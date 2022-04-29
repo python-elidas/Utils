@@ -21,12 +21,16 @@ class Checkbox(Checkbutton):
         self.__control_var = BooleanVar()
         self.__dependencies = list()
         self.config(text = kwargs['text'])
-        self.config(font = kwargs['font'])
+        try:
+            self.config(font = kwargs['font'])
+        except:
+            pass
         self.config(offvalue=False, onvalue=True)
         self.config(variable = self.__control_var)
         self.bind('<ButtonRelease-1>', self.__bind)
         
         self.binded = [self.apply_codependencyes]
+        self.bind('<ButtonRelease-1>', self.__apply_codependencyes)
 
     def set_text(self, text):
         '''
@@ -52,11 +56,11 @@ class Checkbox(Checkbutton):
         else:
             self.__dependencies = list(args)
 
-    def apply_codependencyes(self, event):
+    def __apply_codependencyes(self, event):
         '''
         Applyes the dependencies set.
         If CheckBox, deactivates.
-        If Entry
+        If Entry applies changes its state
         '''
         self.__apply_dependencies()
         for item in self.__dependencies:
@@ -64,9 +68,11 @@ class Checkbox(Checkbutton):
                 if item.is_active():
                     item.__apply_dependencies()
                 item.deselect()
-                
     
     def __apply_dependencies(self):
+        '''
+        Toggels the state of the entry depending state of the codependent checkbox
+        '''
         for item in self.__dependencies:
             if isinstance(item, Entry):
                 if item['state'] == NORMAL:
@@ -115,3 +121,25 @@ class Checkbox(Checkbutton):
         '''
         for func in self.binded:
             func(event)
+
+#__usage example__#
+root = Tk()# root creation
+Label(root, text='Switch').grid(row=0, column=0)
+
+#creation of dependent check boxes
+on=Checkbox(root, text='on')
+on.grid(row=1, column=0)
+off=Checkbox(root, text='off')
+off.grid(row=2, column=0)
+
+#creating a entry dependent on on check box
+name = Entry(root)
+name.grid(row=1, column=1)
+name.insert(0, 'Tu nombre')
+name.config(state=DISABLED)
+
+#setting the dependent relations
+on.set_dependencies(off, name)
+off.set_dependencies(on)
+
+root.mainloop()

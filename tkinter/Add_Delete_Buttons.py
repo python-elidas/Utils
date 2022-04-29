@@ -15,7 +15,7 @@ class Add_Delete(Button):
     in which they are placed.
     ONLY WITH GRID!!
     '''
-    def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=12):
+    def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=10):
         Button.__init__(self, master)
         self.__min = min_row
         self.__max = max_row
@@ -79,3 +79,20 @@ class Add_Delete(Button):
             self.delete.config(state=DISABLED)
         if self.__row < self.__max:
             self.add.config(state=NORMAL)
+            
+            
+#__usage example__#
+if __name__=='__main__':
+    root = Tk() # root creation
+    root.geometry('250x200') # geometry of the window
+    
+    #items to be copied
+    Label(root, text='Hola Mundo').grid(row=0, column=0)
+    name = Entry(root)
+    name.grid(row=0, column=1)
+    
+    #buttons to add or delete rows of copied items
+    Add_Delete(root, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
+    
+    #mainloop
+    root.mainloop()
