@@ -44,7 +44,7 @@ class Window(Tk):
             self._frame.destroy()
         self._frame = frame(self)
         self._frame.pack(fill=NONE, expand=1)
-             
+
     def save_new_user(self, user):
         if not 'users' in self._db.find_tables():
             self._db.create_table('users', 'id_code', 'TEXT')

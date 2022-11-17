@@ -10,6 +10,9 @@ from tkinter import *
 
 #__Main Class__#
 class ScrollWindow(Canvas):
+    '''
+    A simplified way to create a scrollable window
+    '''
     def __init__(self, master):
         Canvas.__init__(self, master)
                 

@@ -23,7 +23,7 @@ class Log_In(Frame):
 		Frame.__init__(self)
 		
 		self._master = master
-  
+
 		#WINDOW CONFIG#
 		self._master.geometry('400x120')
 		self._master.resizable(FALSE, FALSE)
