@@ -103,8 +103,8 @@ class New_User(Frame):
     
     def gen_code(self):
         string = self.name.get() + \
-                 self.surname.get() + \
-                 self.user.get()
+                self.surname.get() + \
+                self.user.get()
         model = hash.new('sha256')
         model.update(string.encode('utf-8'))
         return model.hexdigest()[::2]
