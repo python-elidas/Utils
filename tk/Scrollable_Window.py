@@ -35,22 +35,23 @@ class ScrollWindow(Canvas):
         self.yview_scroll(-1*int(event.delta/120), "units")
         
 #__usage Example__#
-from Add_Delete_Buttons import Add_Delete
+if __name__ == "__main__":
+    from Add_Delete_Buttons import Add_Delete
 
-# root creation and configuration
-root = Tk() 
-root.geometry('275x100')
+    # root creation and configuration
+    root = Tk() 
+    root.geometry('275x100')
 
-#creation of the scrollable frame
-scrl_frm = ScrollWindow(root)
-scrl_frm.pack(fill=NONE, expand=1)
+    #creation of the scrollable frame
+    scrl_frm = ScrollWindow(root)
+    scrl_frm.pack(fill=NONE, expand=1)
 
-#Adding some items
-Label(scrl_frm, text='Hola Mundo').grid(row=0, column=0)
-name = Entry(scrl_frm)
-name.grid(row=0, column=1)
+    #Adding some items
+    Label(scrl_frm, text='Hola Mundo').grid(row=0, column=0)
+    name = Entry(scrl_frm)
+    name.grid(row=0, column=1)
 
-#buttons to add or delete rows of copied items
-Add_Delete(scrl_frm, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
+    #buttons to add or delete rows of copied items
+    Add_Delete(scrl_frm, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
 
-root.mainloop()
+    root.mainloop()
