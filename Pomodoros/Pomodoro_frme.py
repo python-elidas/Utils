@@ -98,7 +98,8 @@ class Pomodoros(Frame):
                 self.timer(self.rest_L, (i, self.n_loop), 'light green', 'Desconexión Larga')
                 messagebox.showwarning(title='Cambio de fase', message='La fase de relax he finalizado\nEmpieza fase de concentración.')
                 i += 1
-        self.run_button.config(text='Resetar', command=self.reboot)
+                loop = 1
+        self.run_button.config(text='Reset', command=self.reboot)
         
     def reboot(self):
         del self.thread
