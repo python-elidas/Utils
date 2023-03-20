@@ -1,5 +1,5 @@
 '''
-Author: Elidas      |   Python Version: 3.6.9
+Author: Elidas      |   Python Version: 3.9.13
 Date: 2021-07-17    |   version: 0.0.1
 '''
 

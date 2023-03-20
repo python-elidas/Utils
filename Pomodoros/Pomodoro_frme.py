@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from time import sleep
 import threading as th
-import datetime
+import datetime, json, os
 
 class Pomodoros(Frame):
     def __init__(self, master):
@@ -11,15 +11,13 @@ class Pomodoros(Frame):
         # Attributes
         self.master = master
         self.thread = th.Thread(target=self.pomodoro, daemon=True)
-        self.focus = 15 # Color 4
-        self.rest = 5 # Color 3
-        self.rest_L = 3*self.rest # Color B
-        self.loop = (self.focus + self.rest) * 3 + (self.focus + self.rest_L)
         self.pause = False
         self.minutes: int
         self.pom:tuple
         self.color:str
         self.period:str
+        
+        self.load_config()
         
         # Main Widgets
         self.time_babel = Label(self, text='Tiempo de estudio: ')
@@ -51,12 +49,13 @@ class Pomodoros(Frame):
         
         self.reboot_btn = Button(self, text='Reinic', command=self.reboot, state=DISABLED)
         self.reboot_btn.grid(row=6, column=0, columnspan=3, sticky=E, padx=10)
-        
+    
     def set_time(self):
         t = self.calc_min()
+        loop = (self.focus + self.rest) * 3 + (self.focus + self.rest_L)
         if t != 0:
-            self.n_loop = (t//self.loop)
-            if t % self.loop:
+            self.n_loop = (t//loop)
+            if t % loop:
                 self.n_loop += 1
         self.period_counter.config(text=f'Pomodoro numero 0 de {self.n_loop}')
         self.study.config(state=DISABLED)
@@ -72,7 +71,7 @@ class Pomodoros(Frame):
         else:
             self.pause = True
             self.pause_button.config(text='Continuar')
-            
+    
     def set_bg(self, color):
         self.master.config(background=color)
         self.config(background=color)
@@ -98,7 +97,7 @@ class Pomodoros(Frame):
             sleep(1)
             if not self.pause:
                 f-=1
-            
+    
     def pomodoro(self):
         i, loop = 1, 1
         while i <= self.n_loop:
@@ -116,14 +115,17 @@ class Pomodoros(Frame):
                 loop = 1
         self.reboot_btn.config(state=DISABLED)
         self.run_button.config(text='Reset', command=self.reboot)
-        
+    
     def reboot(self):
+        # variables
         del self.thread
         self.thread = th.Thread(target=self.pomodoro, daemon=True)
+        self.n_loop = int()
         #TODO: Falta reiniciar todo el objeto
         # Texto
-        self.period_counter.config(text=f'Pomodoro numero 0 de {self.n_loop}')
         self.period_counter.config(text=f'Pomodoro _ de _')
+        self.loop_counter.config(text=f'Loop _ de 4')
+        self.clock.config(text='00:00')
         self.current_phase.config(text='STANDBY')
         # Botones
         self.study.config(state=NORMAL)
@@ -131,7 +133,7 @@ class Pomodoros(Frame):
         self.run_button.config(state=DISABLED)
         self.pause_button.config(state=DISABLED)
         self.reboot_btn.config(state=DISABLED)
-        
+    
     def calc_min(self):
         h0 = int(datetime.datetime.now().strftime('%H'))
         m0 = int(datetime.datetime.now().strftime('%M'))
@@ -141,3 +143,10 @@ class Pomodoros(Frame):
             return (hf-h0)*60 + (mf-m0)
         else:
             return int(self.study.get())
+    
+    def load_config(self):
+        path = '/'.join(os.path.realpath(__file__).split('\\')[:-1])
+        conf = json.load(open(os.path.join(path,'files/config.json'), 'r'))
+        self.focus = conf['focus']
+        self.rest = conf['rest']
+        self.rest_L = conf['rest']*self.rest
