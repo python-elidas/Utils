@@ -3,6 +3,8 @@ from tkinter import messagebox
 from time import sleep
 import threading as th
 import datetime, json, os
+if __name__ == '__main__':
+    from config import Config
 
 class Pomodoros(Frame):
     def __init__(self, master):
@@ -49,6 +51,8 @@ class Pomodoros(Frame):
         
         self.reboot_btn = Button(self, text='Reinic', command=self.reboot, state=DISABLED)
         self.reboot_btn.grid(row=6, column=0, columnspan=3, sticky=E, padx=10)
+        
+        Button(self, text='conf', font=('Consolas',6), command=lambda: self.conf(self.master)).grid(row=3, columnspan=3, sticky=E, padx=10)
     
     def set_time(self):
         t = self.calc_min()
@@ -146,7 +150,11 @@ class Pomodoros(Frame):
     
     def load_config(self):
         path = '/'.join(os.path.realpath(__file__).split('\\')[:-1])
-        conf = json.load(open(os.path.join(path,'files/config.json'), 'r'))
-        self.focus = conf['focus']
-        self.rest = conf['rest']
-        self.rest_L = conf['rest']*self.rest
+        settings = json.load(open(os.path.join(path,'files/config.json'), 'r'))
+        self.focus = settings['focus']
+        self.rest = settings['rest']
+        self.rest_L = settings['rest']*self.rest
+        
+    def conf(self, master):
+        self.pausa()
+        master.switch_frames(master.cnf)

@@ -6,7 +6,7 @@ from tkinter import filedialog
 def change_name(new, coinc, root=None):
     if not root:
         root = Tk()
-        file = filedialog.askdirectory(title='Seleccione carrpeta root')
+        file = filedialog.askdirectory(title='Seleccione carpeta root')
         root.destroy()
         root = '/'.join(str(file).split('/'))
         for folder in os.listdir(root):
@@ -33,6 +33,6 @@ def change_name(new, coinc, root=None):
         return True
     
 if __name__ == '__main__':
-    coinc = input('Establezca patron de busqueda:\n>>> ')
+    coinc = input('Establezca patron de búsqueda:\n>>> ')
     new = input('Establezca nuevo nombre:\n>>> ')
     change_name(new, coinc)
