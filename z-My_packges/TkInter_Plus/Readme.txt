@@ -1,0 +1,1 @@
+Ampliación del paquete TkInter con herramientas desarrolladas por necesidad de proyecto.
