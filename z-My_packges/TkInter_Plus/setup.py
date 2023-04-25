@@ -11,7 +11,7 @@ long_description = (
 
 setup(
     name = 'extended-tk',
-    version = '0.11.0',
+    version = '0.12.0',
     description='An add on for the tkinter package',
     long_description = long_description,
     classifiers=[

@@ -32,12 +32,19 @@ class Add_Delete(Button):
             command=self.__del_row
         )
         self.delete.grid(row=master.grid_size()[1]-1, column=master.grid_size()[0]+1)
-    
+        
+    def __copiable(self, item):
+        no_copy = [Button, Frame]
+        for type in no_copy:
+            if isinstance(item, type):
+                return False
+        return True
+            
     def __add_row(self):
         '''
         Adds a new row with the same items in the row below
         '''
-        to_copy = [i for i in self.__dic if not isinstance(i, Button) and i.grid_info()['row']==self.__row-1]
+        to_copy = [i for i in self.__dic if self.__copiable(i) and i.grid_info()['row']==self.__row-1]
         for item in to_copy:
             new = type(item)(self.master)
             for key in list(item.keys())[:-1]:
