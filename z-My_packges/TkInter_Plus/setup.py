@@ -12,6 +12,7 @@ setup(
     version = '0.14.0',
     description='An add-on for the tkinter package',
     long_description = long_description,
+    long_description_content_type='text/markdown',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
