@@ -15,8 +15,9 @@ class Add_Delete(Button):
     in which they are placed.
     ONLY WITH GRID!!
     '''
-    def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=10):
+    def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=10, extra:tuple=()):
         Button.__init__(self, master)
+        self.__extra = extra
         self.__min = min_row
         self.__max = max_row
         self.__row = self.master.grid_size()[1]
@@ -34,6 +35,25 @@ class Add_Delete(Button):
             command=self.__del_row
         )
         self.delete.grid(row=master.grid_size()[1]-1, column=master.grid_size()[0]+1)
+        
+    def add_extra(self, *args):
+        self.__extra = args
+        
+    def __move_down(self):
+        for item in self.__extra:
+            for info in item.grid_info():
+                if info == 'row':
+                    item.grid({'row': item.grid_info()[info]+1})
+                else:
+                    item.grid({info: item.grid_info()[info]})
+    
+    def __move_up(self):
+        for item in self.__extra:
+            for info in item.grid_info():
+                if info == 'row':
+                    item.grid({'row': item.grid_info()[info]-1})
+                else:
+                    item.grid({info: item.grid_info()[info]})
         
     def __copiable(self, item):
         no_copy = [Button, Frame]
@@ -71,6 +91,8 @@ class Add_Delete(Button):
             self.delete.config(state=NORMAL)
         if self.__row == self.__max and self.__max != -1:
             self.add.config(state=DISABLED)
+        if not len(self.__extra) == 0:
+            self.__move_down()
         
     def __del_row(self):
         '''
@@ -86,20 +108,26 @@ class Add_Delete(Button):
             self.delete.config(state=DISABLED)
         if self.__row < self.__max:
             self.add.config(state=NORMAL)
-            
+        if not len(self.__extra) == 0:
+            self.__move_up()
             
 #__usage example__#
 if __name__=='__main__':
     root = Tk() # root creation
-    root.geometry('250x200') # geometry of the window
+    root.geometry('275x200') # geometry of the window
     
     #items to be copied
     Label(root, text='Hola Mundo').grid(row=0, column=0)
     name = Entry(root)
     name.grid(row=0, column=1)
-    
+
     #buttons to add or delete rows of copied items
-    Add_Delete(root, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
+    copy_buttons = Add_Delete(root, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
+    
+    auto_move = Label(root, text='Este texto se mueve solo!')
+    auto_move.grid(row=1, column=1)
+    
+    copy_buttons.add_extra(auto_move)
     
     #mainloop
     root.mainloop()

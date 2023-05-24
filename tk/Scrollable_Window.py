@@ -54,4 +54,6 @@ if __name__ == "__main__":
     #buttons to add or delete rows of copied items
     Add_Delete(scrl_frm, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
 
+    
+
     root.mainloop()

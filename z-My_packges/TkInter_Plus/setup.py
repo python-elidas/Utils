@@ -1,9 +1,7 @@
-'''Insatalador para el paquete 'primos' '''
-
 from setuptools import setup
 
 long_description = (
-    open('Readme.txt').read()
+    open('README.txt').read()
     + '\n' +
     open('LICENSE').read()
     + '\n'
@@ -11,8 +9,8 @@ long_description = (
 
 setup(
     name = 'extended-tk',
-    version = '0.12.0',
-    description='An add on for the tkinter package',
+    version = '0.14.0',
+    description='An add-on for the tkinter package',
     long_description = long_description,
     classifiers=[
         'Development Status :: 4 - Beta',

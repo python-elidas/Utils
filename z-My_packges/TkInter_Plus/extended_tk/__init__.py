@@ -33,6 +33,25 @@ class Add_Delete(Button):
         )
         self.delete.grid(row=master.grid_size()[1]-1, column=master.grid_size()[0]+1)
         
+    def add_extra(self, *args):
+        self.__extra = args
+        
+    def __move_down(self):
+        for item in self.__extra:
+            for info in item.grid_info():
+                if info == 'row':
+                    item.grid({'row': item.grid_info()[info]+1})
+                else:
+                    item.grid({info: item.grid_info()[info]})
+    
+    def __move_up(self):
+        for item in self.__extra:
+            for info in item.grid_info():
+                if info == 'row':
+                    item.grid({'row': item.grid_info()[info]-1})
+                else:
+                    item.grid({info: item.grid_info()[info]})
+        
     def __copiable(self, item):
         no_copy = [Button, Frame]
         for type in no_copy:
@@ -69,6 +88,8 @@ class Add_Delete(Button):
             self.delete.config(state=NORMAL)
         if self.__row == self.__max and self.__max != -1:
             self.add.config(state=DISABLED)
+        if not len(self.__extra) == 0:
+            self.__move_down()
         
     def __del_row(self):
         '''
@@ -84,6 +105,8 @@ class Add_Delete(Button):
             self.delete.config(state=DISABLED)
         if self.__row < self.__max:
             self.add.config(state=NORMAL)
+        if not len(self.__extra) == 0:
+            self.__move_up()
 
 class Checkbox(Checkbutton):
     '''
@@ -221,6 +244,14 @@ class ScrollWindow(Canvas):
         
     def __on_mousewheel(self, event):
         self.yview_scroll(-1*int(event.delta/120), "units")
+        
+    def collect_children(self, *args, **kwargs): #TODO: crear la opción de filtrar los children
+        collected = []
+        for i in self.__dict__['children'].values():
+            for kind in args:
+                if isinstance(i, kind):
+                    collected.append(i)
+        return collected
         
 class TerminalWindow(Frame):
     '''
