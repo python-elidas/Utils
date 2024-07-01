@@ -7,6 +7,8 @@ Date: 2021-08-24
 
 #__LIBRARIES__#
 from tkinter import *
+if __name__ == '__main__':
+    from Scrollable_Window import ScrollWindow
 
 #__Main Class__#
 class Add_Delete(Button):
@@ -16,12 +18,16 @@ class Add_Delete(Button):
     ONLY WITH GRID!!
     '''
     def __init__(self, master, scale=1, min_row=1, max_row=-1, textFont='Bell MT', textSize=10, extra:tuple=()):
+        
         Button.__init__(self, master)
+        
+        self.__master = master
         self.__extra = extra
         self.__min = min_row
         self.__max = max_row
         self.__row = self.master.grid_size()[1]
         self.__dic = self.master.__dict__['children'].values()
+        
         self.add = Button(
             master, text='+',
             font=(textFont, int(textSize*scale)),
@@ -38,6 +44,7 @@ class Add_Delete(Button):
         
     def add_extra(self, *args):
         self.__extra = args
+        
         
     def __move_down(self):
         for item in self.__extra:
@@ -93,6 +100,9 @@ class Add_Delete(Button):
             self.add.config(state=DISABLED)
         if not len(self.__extra) == 0:
             self.__move_down()
+        if 'ScrollWindow' in str(type(self.__master)):
+            #self.__master.update()
+            pass
         
     def __del_row(self):
         '''

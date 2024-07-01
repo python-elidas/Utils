@@ -28,11 +28,15 @@ class ScrollWindow(Canvas):
         self.create_window(0, 0, window=self.frame, anchor=NW)
         
     def __updateScrollRegion(self, event):
+        print('true')
         self.update_idletasks()
         self.config(scrollregion=self.frame.bbox())
         
     def __on_mousewheel(self, event):
         self.yview_scroll(-1*int(event.delta/120), "units")
+    
+    def update(self):
+        self.__updateScrollRegion(None)
         
 #__usage Example__#
 if __name__ == "__main__":
@@ -52,7 +56,7 @@ if __name__ == "__main__":
     name.grid(row=0, column=1)
 
     #buttons to add or delete rows of copied items
-    Add_Delete(scrl_frm, max_row=5) #configured to copy the row only 4 times, 5 rows in total count
+    Add_Delete(scrl_frm, max_row=15) #configured to copy the row only 4 times, 5 rows in total count
 
     
 
